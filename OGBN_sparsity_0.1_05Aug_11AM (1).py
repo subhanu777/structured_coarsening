@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[7]:
-
 
 import torch
 import numpy as np
@@ -36,7 +31,7 @@ from scipy.sparse import csgraph
 from scipy.sparse.linalg import inv
 
 
-# In[8]:
+
 
 
 import os
@@ -44,7 +39,6 @@ os.getcwd()
 dataset = os.path.join(os.getcwd(),'OGBN')
 
 
-# In[9]:
 
 
 target_dataset = 'ogbn-arxiv'
@@ -54,20 +48,20 @@ dataset = PygNodePropPredDataset(name=target_dataset, root='networks')
 dataset
 
 
-# In[11]:
+
 
 
 data = dataset[0]
 data
 
 
-# In[14]:
+
 
 
 dataset[0].edge_index
 
 
-# In[16]:
+
 
 
 print(dataset[0])
@@ -79,9 +73,9 @@ labels = labels.numpy()
 X = dataset[0].x
 X = X.to_dense()
 N = X.shape[0]
-# NO_OF_CLASSES =  len(set(np.array(dataset[0].y)))
 
-# print(X.shape, adj.shape)
+
+
 
 nn = int(1*N)
 X = X[:nn,:]
@@ -90,28 +84,9 @@ labels = labels[:nn]
 print("shape of feature matrix:",X.shape)
 print("shape of adjacency matrix:",adj.shape)
 
-
-# In[18]:
-
-
 NO_OF_CLASSES=40
-
-
-# In[21]:
-
-
 labels= labels.flatten()
-
-
-# In[22]:
-
-
 labels.shape
-
-
-# In[ ]:
-
-
 def get_laplacian(adj):
     b=torch.ones(adj.shape[0])
     return torch.diag(adj@b)-adj
