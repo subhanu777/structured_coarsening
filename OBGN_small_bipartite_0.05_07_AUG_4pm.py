@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
 
 
 import torch
@@ -46,7 +42,6 @@ dataset = os.path.join(os.getcwd(),'OGBN')
 dataset
 
 
-# In[2]:
 
 
 target_dataset = 'ogbn-arxiv'
@@ -56,13 +51,7 @@ dataset = PygNodePropPredDataset(name=target_dataset, root='networks')
 data = dataset[0]
 
 
-# In[3]:
-
-
 data
-
-
-# In[4]:
 
 
 # first_row = []
@@ -78,7 +67,6 @@ edge_index_global = torch.row_stack((first_row_global,second_row_global))
 second_row
 
 
-# In[5]:
 
 
 MAX_NODES = 40001
@@ -553,10 +541,9 @@ import time
         
 highest_accuracy=0
 lambda_param = 0.001
-#0.0001,0.0001,10,0.0001
-for alpha_param in [100]:
-  for beta_param in [0.1]:
-      for gamma_param in [0.1]:
+for alpha_param in [100,10,1,0.1,0.01,0.001]:
+  for beta_param in [100,10,1,0.1,0.01,0.001]:
+      for gamma_param in [100,10,1,0.1,0.01,0.001]:
             
         av = []
         for _ in range(2):
@@ -588,3 +575,4 @@ for alpha_param in [100]:
         print("Average accuracy = " + str(np.mean(av)*100)  + " +/- " + str(np.std(av)*100))
         print("Params =  " + str(alpha_param)+" " + str(beta_param)+" "+str(gamma_param))
 
+highest_accuracy
