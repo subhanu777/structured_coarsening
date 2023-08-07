@@ -365,7 +365,7 @@ def experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta
       k = int(p*0.05)
       n = X.shape[1]
       ones = csr_matrix(np.ones((k,k)))
-      ones = convertScipyToTensor(ones).cuda()
+      ones = convertScipyToTensor(ones)
       ones = ones.to_dense()
       
       try:
@@ -382,12 +382,7 @@ def experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta
         X = X.to_dense()
       except:
         X = X
-      if(torch.cuda.is_available()):
-        print("GPU is available")
-        C = C.cuda()
-        theta = theta.cuda()
-        X = X.cuda()
-        ones = ones.cuda()
+
       
         
       def bracket_term2fun(C,CT,theta):
@@ -399,7 +394,7 @@ def experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta
           ub = 1e+10
           beta = 0.5 
           lambda_ =  laplacian_lambda_update(lb, ub, beta, U, Lw, k_,C)   
-          lambda_matrix =  torch.diag(lambda_,0).cuda()
+          lambda_matrix =  torch.diag(lambda_,0)
 #           print("U size",U.size())
           return U@lambda_matrix@UT
         
@@ -424,31 +419,31 @@ def experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta
       def update_C(C):
           CT = torch.transpose(C,0,1)
           C.size()
-          t1 = alpha_param*(C@ones).cuda()
-          bracket_term1 = (CT@theta@C).cuda()
+          t1 = alpha_param*(C@ones)
+          bracket_term1 = (CT@theta@C)
           bracket_term2 = bracket_term2fun(C,CT,theta) 
           bracket_term = bracket_term1 - bracket_term2   # bracket term (CT*theta*C - U*lambda*UT)
-          t22 = -2*(theta@C).cuda() 
+          t22 = -2*(theta@C)
 #           print(t22.type())
           t3 = bracket_term1
           t7 = bracket_term2
-          t6 = (CT@A@C).cuda()
+          t6 = (CT@A@C)
           t5 = 2* beta_param*(A@C)
           t5 = t5.float()
           t4 = (1.0/k)
-          t44 = t4*((torch.ones(k,k)).double()).cuda()
+          t44 = t4*((torch.ones(k,k)).double())
 #           print(t3.device)
 #           print(t44.device)
-          t8 = (t3 + t44).cuda()
+          t8 = (t3 + t44)
           t9 = torch.pinverse(t8)                  #change it
           t9 = t9.float()
 #           print(t9.type())
 #           print(t9)
-          t10 = (t22@t9).cuda()
-          t11 = (t6 - t7).cuda()
+          t10 = (t22@t9)
+          t11 = (t6 - t7)
           t11 = t11.float()
           t12 = (t5@t11)
-          t13 = (t1 + t10 +t12).cuda()
+          t13 = (t1 + t10 +t12)
         
           #t2 = beta_param*(theta@C@bracket_term.float())
           grad_fc= t13
@@ -469,20 +464,20 @@ def experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta
       # K is the number of smallest eigenvalues of the Laplacian matrix that are being ignored while updating the eigenvalues.
       def laplacian_lambda_update(lb, ub, beta, U, Lw, k, C):
         q = Lw.size(1) - k
-        U = U.cuda()
+
         UT= torch.transpose(U,0,1)
         UT = UT.type(torch.float64)
-        UT = UT.cuda()
+
         
         CT= torch.transpose(C,0,1)
         CT = CT.type(torch.float64)
-        CT = CT.cuda()
+ 
         
         AC=(A@C).double()
-        AC = AC.cuda()
+   
         
         Af=(CT@AC).double()
-        Af = Af.cuda()
+      
         Af.device
         U.device
         dd = U@Af@UT
@@ -548,15 +543,14 @@ for alpha_param in [100,10,1,0.1,0.01,0.001]:
         av = []
         for _ in range(2):
             avg_accuracy_all=[]
-            X=X.cuda()
+           
             for _ in range(1):
               C = random(p, k, density=0.15, random_state=1, data_rvs=temp2.rvs)
-#               A = adj.cuda()
-              theta = theta.cuda()
+#           
               a = time.time()
-              C_0 = experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta,X,adj.cuda())
+              C_0 = experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta,X,adj)
               b = time.time()
-              C_0 = C_0.cuda()
+      
               L = theta
           
               pseudo_C = torch.linalg.pinv(C_0)
