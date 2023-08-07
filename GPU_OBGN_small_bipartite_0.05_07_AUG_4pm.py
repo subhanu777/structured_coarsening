@@ -545,10 +545,7 @@ def experiment_structure(alpha_param,lambda_param,beta_param,gamma_param,C,theta
       return C
 
 
-# In[ ]:
 
-
-import seaborn as sns
 import time   
         
 highest_accuracy=0
