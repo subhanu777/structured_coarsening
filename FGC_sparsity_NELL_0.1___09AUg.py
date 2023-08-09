@@ -1,20 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[1]:
-
-
-# !pip install deeprobust
-# !conda install pytorch torchvision torchaudio -c pytorch
 import torch
-# print(torch.__version__)
-# !pip install torch-scatter torch-sparse -f https://data.pyg.org/whl/torch-{torch.__version__}.html
-# !pip install torch-geometric
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
-
-from IPython.core.display import display, HTML
-display(HTML("<style>.container { width:90% !important; }</style>"))
+)
 
 from networkx.generators.random_graphs import erdos_renyi_graph
 from networkx.generators.random_graphs import barabasi_albert_graph
@@ -24,26 +10,24 @@ from networkx.generators.community import random_partition_graph
 
 import networkx as nx
 import numpy as np
-import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
+
 
 import math
 from tqdm import tqdm
-import seaborn as sns
+
 from sklearn.decomposition import FactorAnalysis
 
 import random
 
 
-# In[2]:
+
 
 
 import os
 import collections
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 import scipy.sparse as sp
 import torch
 from torch import Tensor
@@ -53,6 +37,7 @@ from torch_geometric.datasets import Planetoid
 import networkx as nx
 from networkx.algorithms import community
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(device)
 data_dir = "./data"
 os.makedirs(data_dir, exist_ok=True)
 
@@ -62,12 +47,8 @@ os.makedirs(data_dir, exist_ok=True)
 
 import numpy
 import torch
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
 
-get_ipython().run_line_magic('matplotlib', 'inline')
-from IPython.core.display import display, HTML
-display(HTML("<style>.container { width:90% !important; }</style>"))
+
 
 
 
@@ -133,7 +114,7 @@ from torch_geometric.datasets import NELL
 dataset = NELL(root='./dataset')
 
 print(dataset[0])
-adj = to_dense_adj(dataset[0].edge_index)
+adj = to_dense_adj(dataset[0].edge_index).to(device)
 adj = adj[0]
 labels = dataset[0].y
 labels = labels.numpy()
@@ -162,10 +143,10 @@ labels
 
 
 def get_laplacian(adj):
-    b=torch.ones(adj.shape[0])
+    b=torch.ones(adj.shape[0]).to(device)
     return torch.diag(adj@b)-adj
 
-theta = get_laplacian(adj)
+theta = get_laplacian(adj).to(device)
 print(theta.shape)
 
 
